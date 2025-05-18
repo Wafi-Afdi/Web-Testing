@@ -10,4 +10,4 @@ Rumah sakit ingin meningkatkan efisiensi pendaftaran pasien dengan sistem antrea
 |----------------------|------------------|----------------------------|
 | Wafi Afdi Alfaruqhi       | 22/503393/TK/55000        | Backend Developer         |
 | Natanael Albert       | 22/503184/TK/54968        | QA tester          |
-| Ramadhani Februarrahman       | 192837465        | Frontend Developer  |
+| Ramadhani Februarrahman       | 22/500335/TK/54838        | Frontend Developer  |
