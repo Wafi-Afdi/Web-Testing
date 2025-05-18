@@ -11,3 +11,8 @@ Rumah sakit ingin meningkatkan efisiensi pendaftaran pasien dengan sistem antrea
 | Wafi Afdi Alfaruqhi       | 22/503393/TK/55000        | Backend Developer         |
 | Natanael Albert       | 987654321        | QA tester          |
 | Ramadhani Februarrahman       | 192837465        | Frontend Developer  |
+
+## Fitur
+
+1. Form buat isi antrean (nama pasien maks 50 karakter, list dokter serta spesialisai, dan waktu rentang)
+2. List nomor antrean lain serta nomor antrean saat ini
