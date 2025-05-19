@@ -6,10 +6,8 @@ const dataController = require("../controllers/dataController")
 const tz = 'Asia/Jakarta';
 
 describe('same_day_appointment', () => {
-
     const yesterday = moment.tz(tz).subtract(1, 'day').set({ hour: 12, minute: 0 }).format();
     const today = moment.tz(tz).set({ hour: 10, minute: 0 }).format();
-
     const mockData = [
         {
             name: "Yesterday",
