@@ -6,6 +6,7 @@ const tz = 'Asia/Jakarta';
 const GetQueueInSameDay = (queue_data) => {
     const result = [];
     const now = moment.tz(tz);
+    
 
     for (const item of queue_data) {
         if (!item.hasOwnProperty('date_start')) {
@@ -17,8 +18,7 @@ const GetQueueInSameDay = (queue_data) => {
         if (!itemDate.isValid()) {
             throw new Error(`Invalid date format for "date_start": ${item.date_start}`);
         }
-
-        if (itemDate.isSame(now, 'day')) {
+        if (itemDate.isSame(now, 'date')) {
             result.push(item);
         }
     }

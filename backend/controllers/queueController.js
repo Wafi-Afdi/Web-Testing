@@ -42,7 +42,7 @@ const GetAllDoctorList = asyncHandler(async (req, res, next) => {
  * membuat antrian terbaru
 */
 const NewPatientQueue = asyncHandler(async (req, res, next) => {
-    const { patient_name, doctor_id, time_start, time_end } = req.body
+    const { patient_name, doctor_id, date_start, date_end } = req.body
 
     const loaded_database = dataController.loadData();
     const doctor_db = loaded_database.doctors_data
@@ -54,7 +54,7 @@ const NewPatientQueue = asyncHandler(async (req, res, next) => {
     }
 
     // upload data
-    const new_patient = utilsFunc.AddNewPatient(patient_name, loaded_database, time_start, doctor_db[doctor_exist_index], time_end)
+    const new_patient = utilsFunc.AddNewPatient(patient_name, loaded_database, date_start, doctor_db[doctor_exist_index], date_end)
 
     dataController.saveData(loaded_database)
 

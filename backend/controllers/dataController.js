@@ -7,9 +7,9 @@ const TEST_FILE = './database/test_data.json'
 function loadData(file = DATA_FILE, is_test = false) {
     let data;
     if(is_test) {
-        data = fs.readFileSync(file);
-    } else {
         data = fs.readFileSync(TEST_FILE);
+    } else {
+        data = fs.readFileSync(file);
     }
     
     return JSON.parse(data);
