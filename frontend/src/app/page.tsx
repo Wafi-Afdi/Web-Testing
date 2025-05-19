@@ -29,14 +29,15 @@ export default function HomePage() {
     setIsLoadingDoctors(true);
     setError('');
     try {
-      const response = await fetch(`${API_BASE_URL}/doctors`);
+      const response = await fetch(`${API_BASE_URL}/appointment/doctors`);
       if (!response.ok) {
         throw new Error(`Gagal mengambil data dokter: ${response.statusText}`);
       }
       const data = await response.json();
-      const formattedDoctors = data.map(doc => ({
+      const formattedDoctors = data?.doctors.map(doc => ({
         ...doc,
-        specialization: doc.spesialisasi
+        specialization: doc.spesialisasi,
+        doctorId: doc.id
       }));
       setDoctorsList(formattedDoctors);
       if (formattedDoctors.length > 0 && !selectedDoctorId) {
@@ -54,12 +55,12 @@ export default function HomePage() {
     setIsLoadingQueue(true);
     // setError(''); // Jangan hapus error form saat refresh antrian
     try {
-      const response = await fetch(`${API_BASE_URL}/`);
+      const response = await fetch(`${API_BASE_URL}/appointment`);
       if (!response.ok) {
         throw new Error(`Gagal mengambil data antrean: ${response.statusText}`);
       }
       const data = await response.json();
-      const formattedQueue = data.map(patient => ({
+      const formattedQueue = data?.queue.map(patient => ({
         queueNumber: patient.queue_number,
         name: patient.name,
         doctorName: patient.doctor_data,
@@ -128,15 +129,15 @@ export default function HomePage() {
     try {
       const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
       const [startTimeStr, endTimeStr] = modalData.time.split(' - ');
-
+      console.log(modalData)
       const appointmentData = {
-        name: modalData.name,
+        patient_name: modalData.name,
         doctor_id: parseInt(modalData.doctorId, 10),
         date_start: `${today}T${startTimeStr}:00.000+07:00`, // +07:00 (WIB)
         date_end: `${today}T${endTimeStr}:00.000+07:00`,   // +07:00 (WIB)
       };
 
-      const response = await fetch(`${API_BASE_URL}/`, {
+      const response = await fetch(`${API_BASE_URL}/appointment`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
