@@ -13,17 +13,17 @@ const validateAppointment = [
 
     body('date_start')
         .isISO8601()
-        .withMessage('time_start must be a valid timestamp'),
+        .withMessage('date_start must be a valid timestamp'),
 
     body('date_end')
         .isISO8601()
-        .withMessage('time_end must be a valid timestamp')
+        .withMessage('date_end must be a valid timestamp')
         .custom((value, { req }) => {
-            const start = new Date(req.body.time_start);
+            const start = new Date(req.body.date_start);
             const end = new Date(value);
 
             if (end < start) {
-                throw new Error('time_end must be greater than or equal to time_start');
+                throw new Error('date_end must be greater than or equal to date_start');
             }
             return true;
         })

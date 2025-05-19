@@ -32,7 +32,7 @@ describe('same_day_appointment', () => {
     ];
 
     it("should return only today's queue", () => {
-        const result = utilsFunc.GetQueueInSameDay(mockData);
+        const result = utilsFunc.GetQueueInSameDay(mockData, today);
         expect(result).toHaveLength(1);
         expect(result[0].name).toBe('Today');
     });
@@ -50,7 +50,7 @@ describe('same_day_appointment', () => {
                 queue_letter: "C"
             }
         ];
-        expect(() => utilsFunc.GetQueueInSameDay(invalidData)).toThrow('Missing "date_start" in one or more queue items');
+        expect(() => utilsFunc.GetQueueInSameDay(invalidData, today)).toThrow('Missing "date_start" in one or more queue items');
     });
 
     it('should throw an error if date_start is invalid format', () => {
@@ -66,7 +66,7 @@ describe('same_day_appointment', () => {
                 queue_letter: "D"
             }
         ];
-        expect(() => utilsFunc.GetQueueInSameDay(invalidDateData)).toThrow(/Invalid date format/);
+        expect(() => utilsFunc.GetQueueInSameDay(invalidDateData, today)).toThrow(/Invalid date format/);
     });
 });
 

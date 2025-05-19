@@ -3,10 +3,9 @@ const dataController = require("./controllers/dataController")
 
 const tz = 'Asia/Jakarta';
 
-const GetQueueInSameDay = (queue_data) => {
+const GetQueueInSameDay = (queue_data, time_data) => {
     const result = [];
-    const now = moment.tz(tz);
-    
+
 
     for (const item of queue_data) {
         if (!item.hasOwnProperty('date_start')) {
@@ -18,7 +17,7 @@ const GetQueueInSameDay = (queue_data) => {
         if (!itemDate.isValid()) {
             throw new Error(`Invalid date format for "date_start": ${item.date_start}`);
         }
-        if (itemDate.isSame(now, 'date')) {
+        if (itemDate.isSame(time_data, 'date')) {
             result.push(item);
         }
     }
@@ -60,13 +59,21 @@ const AddNewPatient = (patient_name, db, time_start, doctor_data, time_end) => {
     ) {
         throw new Error('Invalid or missing doctor_data');
     }
-    
-    const patient_queue = db.patient_data
 
-    const same_day_queue = GetQueueInSameDay(patient_queue, moment.tz(tz))
-    const highestQueueInteger = same_day_queue.reduce((max, item) => {
-        return item.queue_integer > max ? item.queue_integer : max;
-    }, 1);
+    const patient_queue = db.patient_data
+    //console.log(patient_queue)
+
+    const item_day = moment.tz(time_start, tz);
+    const same_day_queue = GetQueueInSameDay(patient_queue, item_day)
+    let highestQueueInteger = 0;
+    //console.log(same_day_queue)
+
+    for (const item of same_day_queue) {
+        //console.log("QUEUE ITEM", item.queue_integer, "MAX", highestQueueInteger);
+        if (item.queue_integer > highestQueueInteger) {
+            highestQueueInteger = item.queue_integer;
+        }
+    }
 
     const new_patient_data = {
         name: patient_name,

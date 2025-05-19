@@ -15,12 +15,13 @@ const GetAllPatientQueue = asyncHandler(async (req, res, next) => {
     const { all } = req.query
     const data = dataController.loadData();
     let queue_data = data.patient_data
+    const now = moment.tz(tz)
 
     if (all == 'true') {
         return res.status(201).json({ queue: [...queue_data], message: "Antrian berhasil diambil" })
 
     } else {
-        queue_data = utilsFunc.GetQueueInSameDay(queue_data)
+        queue_data = utilsFunc.GetQueueInSameDay(queue_data, now)
         return res.status(201).json({ queue: [...queue_data], message: "Antrian berhasil diambil" })
     }
 
