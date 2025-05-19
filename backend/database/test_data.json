@@ -1,0 +1,41 @@
+{
+  "doctors_data": [
+    {
+      "id": 1,
+      "name": "Dr. Agus Septio",
+      "spesialisasi": "Jantung"
+    },
+    {
+      "id": 2,
+      "name": "Dr. Peter",
+      "spesialisasi": "Penyakit dalam"
+    },
+    {
+      "id": 3,
+      "name": "Dr. Joko Anwar",
+      "spesialisasi": "Saraf"
+    }
+  ],
+  "patient_data": [
+    {
+      "name": "Khori",
+      "doctor_data": "Dr. Agus Septio",
+      "doctor_id": 1,
+      "date_start": "2025-05-18T12:00:00.000+07:00",
+      "date_end": "2025-05-18T13:00:00.000+07:00",
+      "queue_number": "A1",
+      "queue_integer": 1,
+      "queue_letter": "A"
+    },
+    {
+      "name": "Siti",
+      "doctor_data": "Dr. Joko Anwar",
+      "doctor_id": 3,
+      "date_start": "2024-08-24T12:00:00.000+07:00",
+      "date_end": "2024-08-24T13:00:00.000+07:00",
+      "queue_number": "A2",
+      "queue_integer": 2,
+      "queue_letter": "A"
+    }
+  ]
+}
