@@ -35,6 +35,32 @@ const CheckDoctorId = (doctor_data, search_doctor_id) => {
 
 
 const AddNewPatient = (patient_name, db, time_start, doctor_data, time_end) => {
+    // Validate required fields
+    if (!patient_name || typeof patient_name !== 'string') {
+        throw new Error('Invalid or missing patient_name');
+    }
+
+    if (!db || typeof db !== 'object' || !Array.isArray(db.patient_data)) {
+        throw new Error('Invalid or missing db or db.patient_data');
+    }
+
+    if (!time_start || !moment(time_start).isValid()) {
+        throw new Error('Invalid or missing time_start');
+    }
+
+    if (!time_end || !moment(time_end).isValid()) {
+        throw new Error('Invalid or missing time_end');
+    }
+
+    if (
+        !doctor_data ||
+        typeof doctor_data !== 'object' ||
+        typeof doctor_data.name !== 'string' ||
+        (typeof doctor_data.id !== 'string' && typeof doctor_data.id !== 'number')
+    ) {
+        throw new Error('Invalid or missing doctor_data');
+    }
+    
     const patient_queue = db.patient_data
 
     const same_day_queue = GetQueueInSameDay(patient_queue, moment.tz(tz))

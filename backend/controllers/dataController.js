@@ -9,7 +9,7 @@ function loadData(file = DATA_FILE, is_test = false) {
     if(is_test) {
         data = fs.readFileSync(TEST_FILE);
     } else {
-        data = fs.readFileSync(file);
+        data = fs.readFileSync(DATA_FILE);
     }
     
     return JSON.parse(data);
