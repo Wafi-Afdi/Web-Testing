@@ -15,5 +15,8 @@ Rumah sakit ingin meningkatkan efisiensi pendaftaran pasien dengan sistem antrea
 ## Fitur
 
 1. Form buat isi antrean (nama pasien maks 50 karakter, list dokter serta spesialisai, dan waktu rentang)
-2. List nomor antrean lain serta nomor antrean saat ini
+2. List nomor antrean lain serta nomor antrean pada hari ini
+
+
+## Acceptance Criteria
 
