@@ -12,6 +12,10 @@ Rumah sakit ingin meningkatkan efisiensi pendaftaran pasien dengan sistem antrea
 | Natanael Albert       | 22/503184/TK/54968        | QA tester          |
 | Ramadhani Februarrahman       | 22/500335/TK/54838        | Frontend Developer  |
 
+- QA Tester: menyusun user requirement, menganalisis fitur yang dibutuhkan dan acceptable criteria, menjalankan End-to-End testing fitur aplikasi secara manual, menyusun API test (black box testing).
+- Backend Developer: membuat program di sisi backend, membuat dan menjalankan unit test (white box testing)
+- Frontend Developer: membuat program di sisi frontend, membuat dan menjalankan unit test (white box testing)
+
 ## Fitur
 
 1. Form buat isi antrean (nama pasien maks 50 karakter, list dokter serta spesialisai, dan waktu rentang)
@@ -20,3 +24,20 @@ Rumah sakit ingin meningkatkan efisiensi pendaftaran pasien dengan sistem antrea
 
 ## Acceptance Criteria
 
+- Pengguna dapat mengakses halaman pendaftaran antrean dan sistem akan menampilkan formulir yang terdiri dari:
+  - Input nama pasien
+  - Input dropdown untuk memilih dokter
+  - Input dropdown untuk memilih waktu kunjungan
+  - Tombol daftar antrean
+- Input nama wajib diisi dengan panjang tidak lebih dari 50 karakter
+- Pengguna mendapatkan nomor antrian setelah mengisi semua input dengan valid dan tetap tersimpan setelah halaman di-refresh
+
+## Screenshot API Test
+
+Screenshot API Test terletak di folder image, dengan nama dari gambar menunjukkan jenis API test yang dilakukan
+
+## Screenshot Coverage Unit Test
+
+## Link Slide Presentasi
+
+https://docs.google.com/presentation/d/1cUqjPYph0LGfjDPvAJG3Q9IZO8hfhABr/edit?usp=sharing&ouid=100161931075865245183&rtpof=true&sd=true
