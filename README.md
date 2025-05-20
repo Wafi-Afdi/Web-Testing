@@ -35,9 +35,40 @@ Rumah sakit ingin meningkatkan efisiensi pendaftaran pasien dengan sistem antrea
 
 ## Screenshot API Test
 
-Screenshot API Test terletak di folder image, dengan nama dari gambar menunjukkan jenis API test yang dilakukan
+Get All Doctors
+![Get All Doctors](image/getDoctors.png)
+
+Get All Appointments
+![Get All Appointments](image/getAppointments.png)
+
+Post Appointment Successful
+![Post Appointment](image/postCorrect.png)
+
+Post Appointment Patient Name as Number
+![Post Patient Name Number](image/postNameNumber.png)
+
+Post Appointment Patient Name more than 50 characters
+![Post Patient Name More Than 50](image/postName50.png)
+
+Post Appointment Doctor ID as string
+![Post Doctor ID string](image/postDoctorString.png)
+
+Post Appointment date_start and date_end Invalid Format
+![Post date_start and date_end invalid](image/postInvalidTimestamp.png)
+
+Post Appointment date_start after date_end
+![Post date_start after date_end](image/postDatestartAfterDateend.png)
 
 ## Screenshot Coverage Unit Test
+
+Frontend
+
+![image](https://github.com/user-attachments/assets/f7ef4e92-aa1d-40f0-a889-5e294f74f434)
+
+Backend
+
+![Coverage Test ](https://github.com/user-attachments/assets/6e120b0a-29c7-48f0-b19a-f04801e8467b)
+
 
 ## Link Slide Presentasi
 
