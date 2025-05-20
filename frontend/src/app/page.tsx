@@ -53,7 +53,6 @@ export default function HomePage() {
 
   const fetchQueue = useCallback(async () => {
     setIsLoadingQueue(true);
-    // setError(''); // Jangan hapus error form saat refresh antrian
     try {
       const response = await fetch(`${API_BASE_URL}/appointment`);
       if (!response.ok) {
@@ -153,8 +152,8 @@ export default function HomePage() {
       const newPatientRegistered = await response.json();
 
       setConfirmation({
-        queueNumber: newPatientRegistered.queue_number,
-        name: newPatientRegistered.name,
+        queueNumber: newPatientRegistered.new_patient?.queue_number,
+        name: modalData.name,
         doctorName: modalData.doctorName,
         doctorSpecialization: modalData.doctorSpecialization,
         time: modalData.time,
@@ -162,8 +161,8 @@ export default function HomePage() {
       fetchQueue(); // Refresh daftar antrean
 
       setPatientName('');
-      setSelectedDoctorId(doctorsList[0]?.id || '');
-      setSelectedTime(initialTimeSlots[0] || '');
+      // setSelectedDoctorId(doctorsList[0]?.id || '');
+      // setSelectedTime(initialTimeSlots[0] || '');
 
     } catch (err) {
       console.error(err);
@@ -377,9 +376,6 @@ export default function HomePage() {
           <div className="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-lg transform transition-all duration-300 ease-in-out scale-100">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-2xl font-semibold text-indigo-600">Konfirmasi Pendaftaran</h3>
-              <button onClick={handleCloseModal} className="text-gray-400 hover:text-gray-600 transition-colors">
-                <X size={28} />
-              </button>
             </div>
             <div className="space-y-4 mb-8">
               <div>
