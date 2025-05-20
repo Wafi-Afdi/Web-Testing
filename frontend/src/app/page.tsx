@@ -319,14 +319,14 @@ export default function HomePage() {
                   <p className="text-lg text-gray-800">{currentlyServing.name}</p>
                   <p className="text-sm text-gray-600">Dokter: {currentlyServing.doctorName}</p>
                   <p className="text-sm text-gray-600">Waktu: {currentlyServing.time}</p>
-                  <button
+                  {/* <button
                     onClick={handleCallNext}
                     disabled={isSubmitting}
                     className="mt-4 w-full bg-purple-500 hover:bg-purple-600 text-white font-medium py-2 px-4 rounded-lg shadow-sm transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? <Loader2 className="h-5 w-5 animate-spin inline-block mr-2"/> : null}
                     Panggil Pasien Berikutnya
-                  </button>
+                  </button> */}
                 </div>
               ) : (
                 <p className="text-gray-500 italic p-4 bg-gray-50 rounded-md text-center">Belum ada pasien dalam antrean yang dilayani.</p>
