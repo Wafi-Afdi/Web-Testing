@@ -24,13 +24,14 @@ Rumah sakit ingin meningkatkan efisiensi pendaftaran pasien dengan sistem antrea
 
 ## Acceptance Criteria
 
-- Pengguna dapat mengakses halaman pendaftaran antrean dan sistem akan menampilkan formulir yang terdiri dari:
-  - Input nama pasien
-  - Input dropdown untuk memilih dokter
-  - Input dropdown untuk memilih waktu kunjungan
-  - Tombol daftar antrean
-- Input nama wajib diisi dengan panjang tidak lebih dari 50 karakter
-- Pengguna mendapatkan nomor antrian setelah mengisi semua input dengan valid dan tetap tersimpan setelah halaman di-refresh
+- Pengguna dapat mengakses halaman pendaftaran antrean dan sistem akan menampilkan formulir pendaftaran antrean yang terdiri dari:
+  - Input nama pasien yang wajib diisi dan tidak lebih dari 50 karakter
+  - Input dropdown untuk memilih salah satu dokter dari pilihan dokter yang berbeda 
+  - Input dropdown untuk memilih salah satu waktu kunjungan dari pilihan waktu kunjungan yang disediakan
+  - Tombol daftar antrean untuk mendaftar antrean menggunakan 3 input yang sudah dipilih
+- Pengguna mendapatkan nomor antrean unik setelah mengisi semua input dengan valid
+- Data nomor antrean tetap ada setelah halaman di-refresh
+- Sistem mereset data nomor antrean yang disimpan di sistem ketika berganti hari
 
 ## Screenshot API Test
 
