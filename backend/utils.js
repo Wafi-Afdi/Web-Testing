@@ -83,7 +83,8 @@ const AddNewPatient = (patient_name, db, time_start, doctor_data, time_end) => {
         date_end: time_end,
         queue_number: "A" + (highestQueueInteger + 1),
         queue_integer: highestQueueInteger + 1,
-        queue_letter: "A"
+        queue_letter: "A",
+        is_done: false
     }
 
     db.patient_data = [...db.patient_data, new_patient_data]
@@ -91,8 +92,52 @@ const AddNewPatient = (patient_name, db, time_start, doctor_data, time_end) => {
     return new_patient_data
 }
 
+const ProcessNextQueue = (patientData, currentDate = moment.tz(tz).format('YYYY-MM-DD')) => {
+    let nextQueue = null;
+    let success = false;
+    let message = '';
+
+    const mutablePatientData = JSON.parse(JSON.stringify(patientData));
+
+    const todaysPendingQueues = mutablePatientData.filter(patient => {
+        const patientDate = moment.tz(patient.date_start, tz).format('YYYY-MM-DD');
+        return patientDate === currentDate && patient.is_done === false;
+    });
+
+    todaysPendingQueues.sort((a, b) => a.queue_integer - b.queue_integer);
+
+    if (todaysPendingQueues.length > 0) {
+        nextQueue = todaysPendingQueues[0];
+
+        const indexToUpdate = mutablePatientData.findIndex(p =>
+            p.name === nextQueue.name &&
+            p.queue_number === nextQueue.queue_number &&
+            moment.tz(p.date_start, tz).format('YYYY-MM-DD') === currentDate
+        );
+
+        if (indexToUpdate !== -1) {
+            mutablePatientData[indexToUpdate].is_done = true;
+            nextQueue = mutablePatientData[indexToUpdate]; 
+            success = true;
+            message = `Antrian ${nextQueue.queue_number} (${nextQueue.name}) berhasil dilanjutkan.`;
+        }
+    }
+
+    if (!success) {
+        message = `Tidak ada antrian yang menunggu atau semua antrian untuk hari ini (${currentDate}) sudah selesai.`;
+    }
+
+    return {
+        success,
+        nextQueue,
+        message,
+        updatedData: mutablePatientData 
+    };
+};
+
 module.exports = {
     GetQueueInSameDay,
     CheckDoctorId,
-    AddNewPatient
+    AddNewPatient,
+    ProcessNextQueue
 }

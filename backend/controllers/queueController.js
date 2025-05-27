@@ -37,6 +37,36 @@ const GetAllDoctorList = asyncHandler(async (req, res, next) => {
     return res.status(201).json({ doctors: [...queue_data], message: "Dokter berhasil diambil" })
 })
 
+/**
+ * PATCH /queue/next
+ * ambil next antrean
+*/
+const PatchNextQueue = asyncHandler(async (req, res, next) => {
+    const data = dataController.loadData();
+    let queue_data = data.patient_data
+    const now = moment.tz(tz)
+
+    const result = utilsFunc.ProcessNextQueue(queue_data);
+
+    
+    if (result.success) {
+        data.patient_data = result.updatedData;
+        dataController.saveData(data); 
+
+        return res.status(200).json({
+            next_queue: result.updatedPatient,
+            message: result.message
+        });
+    } else {
+        return res.status(404).json({
+            next_queue: {},
+            message: result.message
+        });
+    }
+
+})
+
+
 
 /**
  * POST /queue/
@@ -65,5 +95,6 @@ const NewPatientQueue = asyncHandler(async (req, res, next) => {
 module.exports = {
     GetAllPatientQueue,
     NewPatientQueue,
-    GetAllDoctorList
+    GetAllDoctorList,
+    PatchNextQueue
 }
