@@ -24,6 +24,7 @@ export default function HomePage() {
   const [isLoadingDoctors, setIsLoadingDoctors] = useState(false);
   const [isLoadingQueue, setIsLoadingQueue] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCallingNext, setIsCallingNext] = useState(false);
 
   const fetchDoctors = useCallback(async () => {
     setIsLoadingDoctors(true);
@@ -39,8 +40,8 @@ export default function HomePage() {
         specialization: doc.spesialisasi,
         doctorId: doc.id
       }));
-      setDoctorsList(formattedDoctors);
-      if (formattedDoctors.length > 0 && !selectedDoctorId) {
+      setDoctorsList(formattedDoctors || []);
+      if (formattedDoctors && formattedDoctors.length > 0 && !selectedDoctorId) {
         setSelectedDoctorId(formattedDoctors[0].id);
       }
     } catch (err) {
@@ -59,19 +60,23 @@ export default function HomePage() {
         throw new Error(`Gagal mengambil data antrean: ${response.statusText}`);
       }
       const data = await response.json();
-      const formattedQueue = data?.queue.map(patient => ({
-        queueNumber: patient.queue_number,
-        name: patient.name,
-        doctorName: patient.doctor_data,
-        time: new Date(patient.date_start).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' - ' + new Date(patient.date_end).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-        registeredAt: patient.date_start,
+
+      const activePatients = data?.queue.filter(patient => !patient.is_done); //
+
+      const formattedQueue = activePatients?.map(patient => ({ //
+        id: patient.id, //
+        queueNumber: patient.queue_number, //
+        name: patient.name, //
+        doctorName: patient.doctor_data, //
+        time: new Date(patient.date_start).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' - ' + new Date(patient.date_end).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }), //
+        registeredAt: patient.date_start, //
       }));
-      setPatientQueue(formattedQueue);
+      setPatientQueue(formattedQueue || []); //
     } catch (err) {
       console.error(err);
-      setError('Tidak dapat memuat data antrean. Coba lagi nanti.');
+      setError('Tidak dapat memuat data antrean. Coba lagi nanti.'); //
     } finally {
-      setIsLoadingQueue(false);
+      setIsLoadingQueue(false); //
     }
   }, []);
 
@@ -126,14 +131,13 @@ export default function HomePage() {
     setConfirmation(null);
 
     try {
-      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+      const today = new Date().toISOString().split('T')[0];
       const [startTimeStr, endTimeStr] = modalData.time.split(' - ');
-      console.log(modalData)
       const appointmentData = {
         patient_name: modalData.name,
         doctor_id: parseInt(modalData.doctorId, 10),
-        date_start: `${today}T${startTimeStr}:00.000+07:00`, // +07:00 (WIB)
-        date_end: `${today}T${endTimeStr}:00.000+07:00`,   // +07:00 (WIB)
+        date_start: `${today}T${startTimeStr}:00.000+07:00`,
+        date_end: `${today}T${endTimeStr}:00.000+07:00`,
       };
 
       const response = await fetch(`${API_BASE_URL}/appointment`, {
@@ -158,12 +162,9 @@ export default function HomePage() {
         doctorSpecialization: modalData.doctorSpecialization,
         time: modalData.time,
       });
-      fetchQueue(); // Refresh daftar antrean
+      fetchQueue();
 
       setPatientName('');
-      // setSelectedDoctorId(doctorsList[0]?.id || '');
-      // setSelectedTime(initialTimeSlots[0] || '');
-
     } catch (err) {
       console.error(err);
       setError(err.message || 'Terjadi kesalahan saat mendaftar. Coba lagi.');
@@ -179,15 +180,45 @@ export default function HomePage() {
     setModalData(null);
   };
 
-  const currentlyServing = patientQueue.length > 0 ? patientQueue[0] : null;
-  const upcomingQueue = patientQueue.length > 0 ? patientQueue.slice(1) : [];
+  const currentlyServing = patientQueue.length > 0 ? patientQueue[0] : null; //
+  const upcomingQueue = patientQueue.length > 0 ? patientQueue.slice(1) : []; //
 
   const handleCallNext = async () => {
-    if (patientQueue.length > 0) {
-        setConfirmation(null);
+    const patientToCall = patientQueue[0];
+
+    if (patientToCall) {
+      setIsCallingNext(true);
+      setError('');
+      setConfirmation(null);
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/appointment/next`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ message: `Gagal memproses pasien berikutnya: ${response.statusText}` }));
+          throw new Error(errorData.message || `Gagal memproses pasien berikutnya: ${response.statusText}`);
+        }
         await fetchQueue();
+
+      } catch (err) {
+        console.error('Error calling next patient:', err);
+        setError(err.message || 'Terjadi kesalahan saat memanggil pasien berikutnya.');
+      } finally {
+        setIsCallingNext(false);
+      }
+    } else {
+      if (error && error.includes('Tidak dapat memuat data antrean')) {
+      } else {
+        setError("Tidak ada pasien aktif dalam antrean untuk dipanggil.");
+      }
     }
   };
+
 
   return (
     <>
@@ -220,7 +251,7 @@ export default function HomePage() {
                   id="patientName"
                   value={patientName}
                   onChange={(e) => setPatientName(e.target.value)}
-                  maxLength={100}
+                  maxLength={50}
                   className="w-full px-4 py-2.5 text-gray-800 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
                   placeholder="Masukkan nama lengkap Anda"
                 />
@@ -280,7 +311,9 @@ export default function HomePage() {
 
               <button
                 type="submit"
-                disabled={isLoadingDoctors || isSubmitting}
+                role="button"
+                name="Daftar Antrean"
+                disabled={isLoadingDoctors || isSubmitting || !selectedDoctorId}
                 className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150 ease-in-out transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {isSubmitting ? <Loader2 className="h-5 w-5 animate-spin mr-2"/> : null}
@@ -308,7 +341,7 @@ export default function HomePage() {
                 <UserCheck className="mr-3 h-7 w-7 text-purple-500"/>
                 Antrean Saat Ini Dilayani
               </h2>
-              {isLoadingQueue ? (
+              {isLoadingQueue && !isCallingNext ? (
                 <div className="flex items-center justify-center h-20">
                     <Loader2 className="h-8 w-8 animate-spin text-purple-500" />
                 </div>
@@ -318,14 +351,14 @@ export default function HomePage() {
                   <p className="text-lg text-gray-800">{currentlyServing.name}</p>
                   <p className="text-sm text-gray-600">Dokter: {currentlyServing.doctorName}</p>
                   <p className="text-sm text-gray-600">Waktu: {currentlyServing.time}</p>
-                  {/* <button
+                  <button
                     onClick={handleCallNext}
-                    disabled={isSubmitting}
-                    className="mt-4 w-full bg-purple-500 hover:bg-purple-600 text-white font-medium py-2 px-4 rounded-lg shadow-sm transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={isCallingNext || isSubmitting || !currentlyServing}
+                    className="mt-4 w-full bg-purple-500 hover:bg-purple-600 text-white font-medium py-2 px-4 rounded-lg shadow-sm transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                   >
-                    {isSubmitting ? <Loader2 className="h-5 w-5 animate-spin inline-block mr-2"/> : null}
+                    {isCallingNext ? <Loader2 className="h-5 w-5 animate-spin inline-block mr-2"/> : null}
                     Panggil Pasien Berikutnya
-                  </button> */}
+                  </button>
                 </div>
               ) : (
                 <p className="text-gray-500 italic p-4 bg-gray-50 rounded-md text-center">Belum ada pasien dalam antrean yang dilayani.</p>
@@ -337,7 +370,7 @@ export default function HomePage() {
                 <ListChecks className="mr-3 h-7 w-7 text-teal-500"/>
                 Daftar Antrean Berikutnya
               </h2>
-              {isLoadingQueue ? (
+              {isLoadingQueue && !isCallingNext ? (
                  <div className="flex items-center justify-center h-40">
                     <Loader2 className="h-8 w-8 animate-spin text-teal-500" />
                 </div>
@@ -358,7 +391,7 @@ export default function HomePage() {
                  currentlyServing ? (
                     <p className="text-gray-500 italic p-4 bg-gray-50 rounded-md text-center">Tidak ada pasien lain dalam antrean.</p>
                  ) : (
-                    <p className="text-gray-500 italic p-4 bg-gray-50 rounded-md text-center">Belum ada pasien yang mendaftar.</p>
+                    <p className="text-gray-500 italic p-4 bg-gray-50 rounded-md text-center">Belum ada pasien yang mendaftar atau semua antrean telah diproses.</p>
                  )
               )}
             </div>
@@ -372,10 +405,15 @@ export default function HomePage() {
       </div>
 
       {isModalOpen && modalData && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-50 transition-opacity duration-300 ease-in-out">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-50 transition-opacity duration-300 ease-in-out"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
+          data-testid="confirmation-modal">
           <div className="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-lg transform transition-all duration-300 ease-in-out scale-100">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-semibold text-indigo-600">Konfirmasi Pendaftaran</h3>
+              <h3 id="modal-title" className="text-2xl font-semibold text-indigo-600">Konfirmasi Pendaftaran</h3>
             </div>
             <div className="space-y-4 mb-8">
               <div>
@@ -395,6 +433,8 @@ export default function HomePage() {
               <button
                 onClick={handleConfirmRegistration}
                 disabled={isSubmitting}
+                name="Ya, Konfirmasi"
+                role="button"
                 className="w-full sm:w-auto flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-150 ease-in-out flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? <Loader2 className="h-5 w-5 animate-spin mr-2"/> : <Check size={20} className="mr-2"/>}
