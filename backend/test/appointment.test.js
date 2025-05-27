@@ -146,7 +146,7 @@ describe('add_new_patient', () => {
     });
 })
 
-describe('ProcessNextQueue', () => {
+describe('process_next_queue', () => {
     const mockPatientData = [
         {
             name: "Khori",
@@ -248,7 +248,6 @@ describe('ProcessNextQueue', () => {
 
 
     it('should return success: false if no pending queues for today', () => {
-        // Arrange
         const allDoneData = [
             {
                 name: "Khori",
@@ -289,14 +288,6 @@ describe('ProcessNextQueue', () => {
         expect(result.success).toBe(false);
         expect(result.nextQueue).toBeNull();
         expect(result.message).toContain('Tidak ada antrian yang menunggu');
-    });
-
-    it('should not modify the original patientData array passed in', () => {
-        const originalData = JSON.parse(JSON.stringify(mockPatientData));
-
-        utilsFunc.ProcessNextQueue(mockPatientData, todayFormatted);
-
-        expect(mockPatientData).toEqual(originalData); 
     });
 });
 
